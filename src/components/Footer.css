@@ -1,0 +1,868 @@
+/* ============================================================
+   Uiverse 3D Card — Dark Glass Theme (MV monogram)
+   ============================================================ */
+.contact-card-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.parent {
+  width: 290px;
+  height: 300px;
+  perspective: 1000px;
+}
+
+.card {
+  position: relative;
+  height: 100%;
+  border-radius: 50px;
+  background: linear-gradient(
+    135deg,
+    rgba(30, 30, 40, 0.85) 0%,
+    rgba(15, 15, 22, 0.95) 60%,
+    rgba(10, 10, 15, 1) 100%
+  );
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.5s ease-in-out;
+  transform-style: preserve-3d;
+  box-shadow: rgba(0, 0, 0, 0.6) 40px 50px 25px -40px,
+    rgba(255, 255, 255, 0.04) 0px 25px 25px -5px,
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.glass {
+  transform-style: preserve-3d;
+  position: absolute;
+  inset: 8px;
+  border-radius: 55px;
+  border-top-right-radius: 100%;
+  background: linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  transform: translate3d(0px, 0px, 25px);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.5s ease-in-out;
+  pointer-events: none;
+}
+
+.content {
+  padding: 100px 60px 0px 30px;
+  transform: translate3d(0, 0, 26px);
+}
+
+.content .title {
+  display: block;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 20px;
+  letter-spacing: 0.1em;
+  line-height: 1.15;
+  text-shadow: 0 2px 20px rgba(255, 255, 255, 0.15);
+}
+
+.content .text {
+  display: block;
+  color: rgba(230, 230, 240, 0.65);
+  font-size: 13px;
+  margin-top: 18px;
+  line-height: 1.5;
+}
+
+.bottom {
+  padding: 10px 12px;
+  transform-style: preserve-3d;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transform: translate3d(0, 0, 26px);
+}
+
+.bottom .view-more {
+  display: flex;
+  align-items: center;
+  width: 40%;
+  justify-content: flex-end;
+  transition: all 0.2s ease-in-out;
+}
+
+.bottom .view-more:hover {
+  transform: translate3d(0, 0, 10px);
+}
+
+.bottom .view-more .view-more-button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: bolder;
+  font-size: 12px;
+  text-decoration: none;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  transition: color 0.2s ease;
+}
+
+.bottom .view-more:hover .view-more-button {
+  color: #ffffff;
+}
+
+.bottom .view-more .svg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.85);
+  stroke-width: 3px;
+  max-height: 15px;
+}
+
+.bottom .social-buttons-container {
+  display: flex;
+  gap: 10px;
+  transform-style: preserve-3d;
+}
+
+.bottom .social-buttons-container .social-button {
+  width: 30px;
+  aspect-ratio: 1;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 7px 5px -5px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.bottom .social-buttons-container .social-button:first-child {
+  transition: transform 0.2s ease-in-out 0.4s, box-shadow 0.2s ease-in-out 0.4s,
+    background 0.2s ease, border-color 0.2s ease;
+}
+.bottom .social-buttons-container .social-button:nth-child(2) {
+  transition: transform 0.2s ease-in-out 0.6s, box-shadow 0.2s ease-in-out 0.6s,
+    background 0.2s ease, border-color 0.2s ease;
+}
+.bottom .social-buttons-container .social-button:nth-child(3) {
+  transition: transform 0.2s ease-in-out 0.8s, box-shadow 0.2s ease-in-out 0.8s,
+    background 0.2s ease, border-color 0.2s ease;
+}
+
+.bottom .social-buttons-container .social-button .svg {
+  width: 14px;
+  fill: rgba(255, 255, 255, 0.75);
+  transition: fill 0.2s ease;
+}
+
+.bottom .social-buttons-container .social-button:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 0.95);
+}
+.bottom .social-buttons-container .social-button:hover .svg {
+  fill: #0a0a0f;
+}
+.bottom .social-buttons-container .social-button:active {
+  background: rgba(200, 200, 210, 0.9);
+}
+.bottom .social-buttons-container .social-button:active .svg {
+  fill: #0a0a0f;
+}
+
+.logo {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform-style: preserve-3d;
+}
+
+.logo .circle {
+  display: block;
+  position: absolute;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  top: 0;
+  right: 0;
+  box-shadow: rgba(0, 0, 0, 0.5) -10px 10px 20px 0px,
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.5s ease-in-out;
+}
+
+.logo .circle1 {
+  width: 170px;
+  transform: translate3d(0, 0, 20px);
+  top: 8px;
+  right: 8px;
+}
+.logo .circle2 {
+  width: 140px;
+  transform: translate3d(0, 0, 40px);
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  transition-delay: 0.4s;
+}
+.logo .circle3 {
+  width: 110px;
+  transform: translate3d(0, 0, 60px);
+  top: 17px;
+  right: 17px;
+  background: rgba(255, 255, 255, 0.08);
+  transition-delay: 0.8s;
+}
+.logo .circle4 {
+  width: 80px;
+  transform: translate3d(0, 0, 80px);
+  top: 23px;
+  right: 23px;
+  background: rgba(255, 255, 255, 0.1);
+  transition-delay: 1.2s;
+}
+.logo .circle5 {
+  width: 50px;
+  transform: translate3d(0, 0, 100px);
+  top: 30px;
+  right: 30px;
+  display: grid;
+  place-content: center;
+  background: rgba(255, 255, 255, 0.12);
+  transition-delay: 1.6s;
+}
+
+.logo .circle5 .monogram {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.4);
+  line-height: 1;
+}
+
+.parent:hover .card {
+  transform: rotate3d(1, 1, 0, 30deg);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: rgba(0, 0, 0, 0.7) 30px 50px 25px -40px,
+    rgba(255, 255, 255, 0.06) 0px 25px 30px 0px,
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.parent:hover .card .bottom .social-buttons-container .social-button {
+  transform: translate3d(0, 0, 50px);
+  box-shadow: rgba(0, 0, 0, 0.5) -5px 20px 10px 0px;
+}
+
+.parent:hover .card .logo .circle2 {
+  transform: translate3d(0, 0, 60px);
+  background: rgba(255, 255, 255, 0.08);
+}
+.parent:hover .card .logo .circle3 {
+  transform: translate3d(0, 0, 80px);
+  background: rgba(255, 255, 255, 0.1);
+}
+.parent:hover .card .logo .circle4 {
+  transform: translate3d(0, 0, 100px);
+  background: rgba(255, 255, 255, 0.12);
+}
+.parent:hover .card .logo .circle5 {
+  transform: translate3d(0, 0, 120px);
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* ============================================================
+   Footer social buttons
+   ============================================================ */
+.footer-social-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: grid;
+  place-content: center;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.footer-social-btn:hover {
+  background: #00e5b0;
+  border-color: #00e5b0;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 229, 176, 0.3);
+}
+
+.footer-social-svg {
+  width: 16px;
+  height: 16px;
+  fill: #ffffff;
+  transition: fill 0.25s ease;
+}
+
+.footer-social-btn:hover .footer-social-svg {
+  fill: #0a0a0a;
+}
+
+/* ============================================================
+   Fix link decoration for the Javierrocadev card
+   ============================================================ */
+.footer-card-wrapper a {
+  text-decoration: none;
+}
+
+.footer-card-wrapper .group {
+  z-index: 2;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 768px) {
+  .parent {
+    width: 260px;
+    height: 280px;
+  }
+
+  .content {
+    padding: 90px 40px 0px 24px;
+  }
+
+  .content .title {
+    font-size: 18px;
+  }
+
+  .content .text {
+    font-size: 12px;
+  }
+
+  .footer-card-wrapper .group {
+    transform: rotate(0deg);
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+  }
+}
+
+/* ============================================================
+   Javierrocadev card — Dark Glass theme
+   ============================================================ */
+.jr-glass-card {
+  position: relative;
+  width: 288px;             /* w-72 */
+  height: 208px;            /* h-52 */
+  padding: 1.25rem;         /* p-5 */
+  border-radius: 1rem;      /* rounded-2xl */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+
+  /* Dark glass base */
+  background: linear-gradient(
+    145deg,
+    rgba(40, 40, 55, 0.75) 0%,
+    rgba(20, 20, 30, 0.9) 55%,
+    rgba(10, 10, 18, 0.98) 100%
+  );
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow:
+    rgba(0, 0, 0, 0.55) 0px 25px 45px -25px,
+    rgba(255, 255, 255, 0.05) 0px 15px 25px -10px,
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+
+  /* Rotation + transition */
+  transform: rotate(-12deg);
+  transition: transform 0.4s ease, box-shadow 0.4s ease,
+    border-color 0.4s ease;
+}
+
+.jr-glass-card:hover {
+  transform: rotate(0deg) translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow:
+    rgba(0, 0, 0, 0.65) 0px 30px 55px -25px,
+    rgba(255, 255, 255, 0.08) 0px 20px 35px -10px,
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* Subtle sheen overlay */
+.jr-glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    transparent 40%
+  );
+  pointer-events: none;
+}
+
+/* Content (name + role) */
+.jr-glass-content {
+  position: relative;
+  z-index: 2;
+  color: #ffffff;
+}
+
+.jr-initials {
+  display: block;
+  font-weight: 900;
+  font-size: 2.75rem;      /* ~text-5xl */
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  text-shadow: 0 2px 20px rgba(255, 255, 255, 0.18);
+}
+
+.jr-role {
+  margin-top: 0.35rem;
+  font-size: 0.75rem;      /* text-xs */
+  letter-spacing: 0.06em;
+  color: rgba(230, 230, 240, 0.7);
+  text-transform: uppercase;
+}
+
+/* Download button */
+.jr-glass-btn {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.25s ease, border-color 0.25s ease,
+    color 0.25s ease, transform 0.25s ease;
+}
+
+.jr-glass-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 0.95);
+  color: #0a0a0f;
+  transform: translateY(-2px);
+}
+
+.jr-glass-btn-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: currentColor;
+  transition: fill 0.25s ease;
+}
+
+/* Glass silhouette decorations */
+.jr-glass-svg {
+  position: absolute;
+  bottom: -0.125rem;
+  right: -5rem;
+  width: 12rem;
+  height: 12rem;
+  z-index: 1;
+  pointer-events: none;
+  fill: rgba(255, 255, 255, 0.06);
+  transition: transform 0.5s ease, fill 0.5s ease;
+}
+
+.jr-glass-svg-back {
+  stroke: rgba(120, 170, 255, 0.25);
+  stroke-width: 5;
+  stroke-miterlimit: 10;
+}
+
+.jr-glass-svg-front {
+  stroke: rgba(120, 170, 255, 0.15);
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  transition-duration: 0.3s;
+}
+
+.jr-glass-card:hover .jr-glass-svg-back {
+  transform: scale(1.25);
+  fill: rgba(255, 255, 255, 0.08);
+}
+
+.jr-glass-card:hover .jr-glass-svg-front {
+  transform: scale(1.25);
+  fill: rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive: on mobile, remove rotation */
+@media (max-width: 768px) {
+  .jr-glass-card {
+    transform: rotate(0deg);
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+  }
+}
+
+
+/* ============================================================
+   Education — Snake Timeline
+   ============================================================ */
+.edu-timeline {
+  position: relative;
+  padding: 1rem 0;
+}
+
+/* Vertical track (background line) */
+.edu-line-track {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 1.25rem;            /* mobile: line on the left */
+  width: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+/* Animated fill (grows with scroll) */
+.edu-line-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    #00e5b0 0%,
+    #00e5b0 40%,
+    rgba(0, 229, 176, 0.4) 100%
+  );
+  transform-origin: top center;
+  box-shadow: 0 0 20px rgba(0, 229, 176, 0.5),
+    0 0 40px rgba(0, 229, 176, 0.25);
+  border-radius: 999px;
+}
+
+/* Each row */
+.edu-row {
+  position: relative;
+  padding-left: 4rem;        /* space for the line + node */
+  margin-bottom: 2rem;
+}
+
+.edu-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Node (dot) on the line */
+.edu-node {
+  position: absolute;
+  left: calc(1.25rem - 9px); /* center on the 2px line */
+  top: 1.4rem;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0, 229, 176, 0.15);
+  display: grid;
+  place-content: center;
+  box-shadow: 0 0 0 4px rgba(0, 229, 176, 0.08),
+    0 0 20px rgba(0, 229, 176, 0.35);
+  z-index: 2;
+}
+
+.edu-node-inner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00e5b0;
+  box-shadow: 0 0 10px rgba(0, 229, 176, 0.9);
+}
+
+/* Card */
+.edu-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(40, 40, 55, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 1.25rem 1.5rem;
+  transition: border-color 0.3s ease, background 0.3s ease,
+    transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.edu-card:hover {
+  border-color: rgba(0, 229, 176, 0.35);
+  background: rgba(40, 40, 55, 0.55);
+  transform: translateX(4px);
+  box-shadow: 0 10px 30px -15px rgba(0, 229, 176, 0.3);
+}
+
+/* ============================================================
+   Desktop: alternate left / right (snake layout)
+   ============================================================ */
+@media (min-width: 768px) {
+  /* Move the line to the center */
+  .edu-line-track {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Rows alternate sides */
+  .edu-row {
+    width: 50%;
+    padding-left: 0;
+    margin-bottom: 3rem;
+  }
+
+  .edu-row-left {
+    padding-right: 3rem;
+    margin-right: auto;
+    text-align: right;
+  }
+
+  .edu-row-right {
+    padding-left: 3rem;
+    margin-left: auto;
+  }
+
+  /* Node positioned on the center line */
+  .edu-node {
+    top: 1.4rem;
+    left: auto;
+  }
+
+  .edu-row-left .edu-node {
+    right: -9px;
+  }
+
+  .edu-row-right .edu-node {
+    left: -9px;
+  }
+
+  /* Card alignment */
+  .edu-row-left .edu-card {
+    align-items: flex-end;
+  }
+
+  .edu-row-right .edu-card {
+    align-items: flex-start;
+  }
+
+  /* Hover direction */
+  .edu-row-left .edu-card:hover {
+    transform: translateX(-4px);
+  }
+  .edu-row-right .edu-card:hover {
+    transform: translateX(4px);
+  }
+
+  /* Flip internal card layout on left side */
+  .edu-row-left .edu-card > div:first-child {
+    text-align: right;
+  }
+
+  /* Keep result block right-aligned on desktop for both sides */
+  .edu-card > div:last-child {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+
+
+/* ============================================================
+   Education — Curved Snake Timeline
+   ============================================================ */
+.edu-snake {
+  position: relative;
+  min-height: 900px;
+  padding: 1rem 0;
+}
+
+/* SVG positioned absolutely behind the cards */
+.edu-snake-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Each row absolutely positioned along the snake */
+.edu-snake-row {
+  position: absolute;
+  z-index: 2;
+  width: calc(50% - 40px);
+  max-width: 340px;
+}
+
+/* Node (dot) */
+.edu-node {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0, 229, 176, 0.15);
+  display: grid;
+  place-content: center;
+  box-shadow: 0 0 0 4px rgba(0, 229, 176, 0.08),
+    0 0 20px rgba(0, 229, 176, 0.45);
+  z-index: 3;
+}
+
+.edu-node-inner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00e5b0;
+  box-shadow: 0 0 10px rgba(0, 229, 176, 0.9);
+}
+
+/* Card */
+.edu-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(40, 40, 55, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 1.25rem 1.5rem;
+  transition: border-color 0.3s ease, background 0.3s ease,
+    transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.edu-card:hover {
+  border-color: rgba(0, 229, 176, 0.4);
+  background: rgba(40, 40, 55, 0.75);
+  box-shadow: 0 10px 30px -15px rgba(0, 229, 176, 0.4);
+}
+
+/* ============================================================
+   Row positions — matching the SVG path coordinates
+   The SVG viewBox is 400x900, so we map:
+   x=60 → left area (~15%)
+   x=200 → center
+   x=340 → right area (~85%)
+   ============================================================ */
+
+/* Row 1 — left side, top */
+.edu-snake-row-1 {
+  top: 5%;
+  left: 2%;
+}
+.edu-snake-row-1 .edu-node {
+  top: 50%;
+  right: -10px;
+  transform: translateY(-50%);
+}
+.edu-snake-row-1 .edu-card {
+  align-items: flex-end;
+  text-align: right;
+}
+
+/* Row 2 — right side */
+.edu-snake-row-2 {
+  top: 30%;
+  right: 2%;
+}
+.edu-snake-row-2 .edu-node {
+  top: 50%;
+  left: -10px;
+  transform: translateY(-50%);
+}
+.edu-snake-row-2 .edu-card {
+  align-items: flex-start;
+}
+
+/* Row 3 — left side */
+.edu-snake-row-3 {
+  top: 55%;
+  left: 2%;
+}
+.edu-snake-row-3 .edu-node {
+  top: 50%;
+  right: -10px;
+  transform: translateY(-50%);
+}
+.edu-snake-row-3 .edu-card {
+  align-items: flex-end;
+  text-align: right;
+}
+
+/* ============================================================
+   Mobile — fallback to simple vertical layout
+   ============================================================ */
+@media (max-width: 768px) {
+  .edu-snake {
+    min-height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-left: 2.5rem;
+    position: relative;
+  }
+
+  /* Hide the SVG snake on mobile */
+  .edu-snake-svg {
+    display: none;
+  }
+
+  /* Simple left vertical line on mobile */
+  .edu-snake::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 1rem;
+    width: 2px;
+    background: linear-gradient(
+      180deg,
+      #00e5b0 0%,
+      rgba(0, 229, 176, 0.3) 100%
+    );
+    border-radius: 999px;
+    box-shadow: 0 0 15px rgba(0, 229, 176, 0.5);
+  }
+
+  .edu-snake-row {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+  }
+
+  .edu-node {
+    top: 1.4rem;
+    left: -2.5rem;
+    right: auto !important;
+    transform: none !important;
+  }
+
+  .edu-card {
+    align-items: flex-start !important;
+    text-align: left !important;
+  }
+}
