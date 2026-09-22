@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { gsap, ScrollTrigger, prefersReducedMotion } from "../lib/gsap.js";
+import {
+  gsap,
+  ScrollTrigger,
+  prefersReducedMotion,
+  reveal,
+  revealBatch,
+} from "../lib/gsap.js";
 import lastVideo from "../assets/last.mp4";
 import background from "../assets/background.png";
 import mohan3 from "../assets/mohan3.png";
@@ -10,82 +16,190 @@ import "./Footer.css";
 function SecondVideoSection() {
   const sectionRef = useRef(null);
   const videoRef = useRef(null);
+
   const [playing, setPlaying] = useState(false);
   const [blocked, setBlocked] = useState(false);
 
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
+
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !playing) {
-          const v = videoRef.current;
-          if (v) {
-            v.play()
-              .then(() => setPlaying(true))
-              .catch(() => setBlocked(true));
-          }
+        const video = videoRef.current;
+
+        if (!video) return;
+
+        if (entry.isIntersecting) {
+          video
+            .play()
+            .then(() => {
+              setPlaying(true);
+              setBlocked(false);
+            })
+            .catch(() => {
+              setBlocked(true);
+            });
+        } else {
+          video.pause();
+          setPlaying(false);
         }
       },
-      { threshold: 0.6 },
+      {
+        threshold: 0.2,
+      },
     );
+
     io.observe(el);
+
     return () => io.disconnect();
   }, []);
 
   useEffect(() => {
+    const reduced = prefersReducedMotion();
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".video-overlay-text",
-        { opacity: 0, y: 16 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: { trigger: sectionRef.current, start: "top 60%" },
-        },
-      );
+      reveal(".video-overlay-text", {
+        direction: "bottom",
+        distance: reduced ? 0 : 90,
+        blur: reduced ? 0 : 10,
+        scale: reduced ? 1 : 0.95,
+        duration: reduced ? 0.3 : 1.15,
+        trigger: sectionRef.current,
+        start: "top 75%",
+        cinematic: true,
+      });
     }, sectionRef);
+
     return () => ctx.revert();
   }, []);
 
   const manualPlay = () => {
-    videoRef.current?.play().then(() => {
-      setPlaying(true);
-      setBlocked(false);
-    });
+    const video = videoRef.current;
+
+    if (!video) return;
+
+    video
+      .play()
+      .then(() => {
+        setPlaying(true);
+        setBlocked(false);
+      })
+      .catch(() => {
+        setBlocked(true);
+      });
   };
 
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen w-full overflow-hidden bg-ink"
+      className="
+        relative
+        min-h-[100svh]
+        w-full
+        overflow-hidden
+        bg-black
+      "
     >
+      {/* =====================================================
+          BLACK BACKGROUND
+      ===================================================== */}
+
+      <div className="absolute inset-0 bg-black" />
+
+      {/* =====================================================
+          VIDEO
+      ===================================================== */}
+
       <video
         ref={videoRef}
         src={lastVideo}
         muted
         loop
         playsInline
-        preload="none"
-        className="absolute inset-0 h-full w-full object-cover"
+        preload="metadata"
+        className="second-video absolute z-[1]"
       />
-      <div className="absolute inset-0 bg-ink/45" />
-      <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-        <h3 className="video-overlay-text font-serif-display text-3xl text-frost sm:text-4xl">
-          Building systems.
-          <br />
-          Solving problems.
-        </h3>
-        {blocked && (
-          <button
-            onClick={manualPlay}
-            className="video-overlay-text mt-6 rounded-full border border-white/30 px-6 py-2 text-[11px] tracking-label text-frost uppercase"
+      <div className="second-video-line-mask" />
+
+      {/* =====================================================
+          DARK OVERLAY
+      ===================================================== */}
+
+      <div
+        className="
+          absolute
+          inset-0
+          z-[2]
+          bg-black/35
+          pointer-events-none
+        "
+      />
+
+      {/* =====================================================
+          CONTENT
+      ===================================================== */}
+
+      <div
+        className="
+          relative
+          z-[4]
+          flex
+          min-h-[100svh]
+          w-full
+          items-center
+          justify-center
+          px-5
+          py-24
+          text-center
+        "
+      >
+        <div className="max-w-3xl">
+          <h3
+            className="
+              video-overlay-text
+              font-serif-display
+              text-3xl
+              leading-tight
+              text-frost
+              sm:text-4xl
+              md:text-5xl
+            "
           >
-            Play
-          </button>
-        )}
+            Building systems.
+            <br />
+            Solving problems.
+          </h3>
+
+          {blocked && (
+            <button
+              type="button"
+              onClick={manualPlay}
+              className="
+                video-overlay-text
+                mt-7
+                inline-flex
+                items-center
+                justify-center
+                rounded-full
+                border
+                border-white/30
+                bg-black/50
+                px-6
+                py-3
+                text-[10px]
+                tracking-[0.18em]
+                text-frost
+                uppercase
+                backdrop-blur-md
+                transition
+                hover:border-white/60
+                hover:bg-white/10
+              "
+            >
+              Play
+            </button>
+          )}
+        </div>
       </div>
     </section>
   );
@@ -103,6 +217,8 @@ function ExperienceSection() {
   const quickY2 = useRef(null);
 
   useEffect(() => {
+    const reduced = prefersReducedMotion();
+
     const ctx = gsap.context(() => {
       quickX.current = gsap.quickTo(portraitRef.current, "x", {
         duration: 0.6,
@@ -121,18 +237,78 @@ function ExperienceSection() {
         ease: "power2.out",
       });
 
-      gsap.fromTo(
-        ".exp-reveal",
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.12,
-          scrollTrigger: { trigger: sectionRef.current, start: "top 70%" },
-        },
-      );
+      /* Eyebrow — from left */
+      reveal(".exp-eyebrow", {
+        direction: "left",
+        distance: reduced ? 0 : 60,
+        blur: reduced ? 0 : 7,
+        duration: reduced ? 0.3 : 1,
+        trigger: sectionRef.current,
+        start: "top 72%",
+        cinematic: true,
+      });
+
+      /* Company title — from bottom, cinematic */
+      reveal(".exp-company", {
+        direction: "bottom",
+        distance: reduced ? 0 : 90,
+        blur: reduced ? 0 : 11,
+        scale: reduced ? 1 : 0.94,
+        duration: reduced ? 0.3 : 1.2,
+        delay: 0.08,
+        trigger: sectionRef.current,
+        start: "top 72%",
+        cinematic: true,
+      });
+
+      /* Role / dates — from right */
+      reveal(".exp-role", {
+        direction: "right",
+        distance: reduced ? 0 : 70,
+        blur: reduced ? 0 : 6,
+        duration: reduced ? 0.3 : 1,
+        delay: 0.15,
+        trigger: sectionRef.current,
+        start: "top 72%",
+      });
+
+      /* Bullet list — staggered from bottom */
+      reveal(".exp-list li", {
+        direction: "bottom",
+        distance: reduced ? 0 : 50,
+        blur: reduced ? 0 : 5,
+        duration: reduced ? 0.3 : 0.85,
+        stagger: 0.12,
+        delay: 0.2,
+        trigger: sectionRef.current,
+        start: "top 72%",
+      });
+
+      /* Second job block — from bottom */
+      reveal(".exp-block-2", {
+        direction: "bottom",
+        distance: reduced ? 0 : 70,
+        blur: reduced ? 0 : 8,
+        scale: reduced ? 1 : 0.96,
+        duration: reduced ? 0.3 : 1.05,
+        delay: 0.3,
+        trigger: sectionRef.current,
+        start: "top 72%",
+        cinematic: true,
+      });
+
+      /* Portrait — from right, cinematic depth */
+      reveal(".exp-portrait", {
+        direction: "right",
+        distance: reduced ? 0 : 110,
+        blur: reduced ? 0 : 12,
+        scale: reduced ? 1 : 0.94,
+        duration: reduced ? 0.3 : 1.25,
+        delay: 0.15,
+        trigger: sectionRef.current,
+        start: "top 72%",
+        cinematic: true,
+      });
     }, sectionRef);
 
     const io = new IntersectionObserver(
@@ -178,16 +354,16 @@ function ExperienceSection() {
 
       <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 md:grid-cols-2 md:px-10">
         <div>
-          <p className="exp-reveal mb-3 text-[11px] tracking-label text-accent uppercase">
+          <p className="exp-eyebrow mb-3 text-[11px] tracking-label text-accent uppercase">
             Experience
           </p>
-          <h2 className="exp-reveal font-serif-display text-3xl text-frost sm:text-4xl">
+          <h2 className="exp-company font-serif-display text-3xl text-frost sm:text-4xl">
             Stackly
           </h2>
-          <p className="exp-reveal mt-1 text-sm tracking-label text-mist uppercase">
+          <p className="exp-role mt-1 text-sm tracking-label text-mist uppercase">
             Backend Developer &nbsp;&middot;&nbsp; Dec 2025 &ndash; Present
           </p>
-          <ul className="exp-reveal mt-6 space-y-3 text-sm leading-relaxed text-mist">
+          <ul className="exp-list mt-6 space-y-3 text-sm leading-relaxed text-mist">
             <li>
               Built and maintained backend APIs for a Job Portal &mdash; job
               listings, user management, role-based access, and application
@@ -204,7 +380,7 @@ function ExperienceSection() {
             </li>
           </ul>
 
-          <div className="exp-reveal mt-10 border-t border-white/10 pt-6">
+          <div className="exp-block-2 mt-10 border-t border-white/10 pt-6">
             <h3 className="font-serif-display text-xl text-frost">
               Sisco Energy Pvt. Limited, Tiruchirappalli
             </h3>
@@ -220,7 +396,7 @@ function ExperienceSection() {
         </div>
 
         <div
-          className="exp-reveal relative flex justify-center md:justify-end"
+          className="exp-portrait relative flex justify-center md:justify-end"
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
           onMouseMove={onMove}
@@ -298,36 +474,71 @@ function EducationSection() {
   const pathRef = useRef(null);
 
   useEffect(() => {
+    const reduced = prefersReducedMotion();
     const ctx = gsap.context(() => {
-      // Reveal cards
-      gsap.fromTo(
-        ".edu-card",
-        { opacity: 0, y: 24 },
-        {
+      /* Eyebrow from left */
+      reveal(".edu-eyebrow", {
+        direction: "left",
+        distance: reduced ? 0 : 55,
+        blur: reduced ? 0 : 7,
+        duration: reduced ? 0.3 : 1,
+        trigger: sectionRef.current,
+        start: "top 78%",
+        cinematic: true,
+      });
+
+      /* Title from bottom */
+      reveal(".edu-title", {
+        direction: "bottom",
+        distance: reduced ? 0 : 80,
+        blur: reduced ? 0 : 11,
+        scale: reduced ? 1 : 0.95,
+        duration: reduced ? 0.3 : 1.15,
+        delay: 0.08,
+        trigger: sectionRef.current,
+        start: "top 78%",
+        cinematic: true,
+      });
+
+      /* Education cards — stagger from alternating sides */
+      if (!reduced) {
+        revealBatch(".edu-card", {
+          stagger: 0.15,
+          cinematic: true,
+          autoDirection: true,
+          distance: 80,
+          blur: 10,
+          scale: 0.95,
+          duration: 1.05,
+          trigger: sectionRef.current,
+          start: "top 75%",
+        });
+      } else {
+        gsap.set(".edu-card", {
           opacity: 1,
+          x: 0,
           y: 0,
-          duration: 0.7,
-          ease: "power3.out",
-          stagger: 0.15,
-          scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
-        },
-      );
+          filter: "none",
+        });
+      }
 
-      // Reveal nodes
-      gsap.fromTo(
-        ".edu-node",
-        { scale: 0, opacity: 0 },
-        {
-          scale: 1,
-          opacity: 1,
-          duration: 0.5,
-          ease: "back.out(2)",
-          stagger: 0.15,
-          scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
-        },
-      );
+      /* Nodes — subtle pop from bottom */
+      if (!reduced) {
+        gsap.fromTo(
+          ".edu-node",
+          { scale: 0, opacity: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 0.6,
+            ease: "back.out(1.8)",
+            stagger: 0.15,
+            scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
+          },
+        );
+      }
 
-      // Animate the snake path drawing itself on scroll
+      /* Animate the snake path drawing itself on scroll */
       if (pathRef.current) {
         const length = pathRef.current.getTotalLength();
         gsap.set(pathRef.current, {
@@ -355,10 +566,10 @@ function EducationSection() {
       className="relative bg-charcoal py-24 overflow-hidden"
     >
       <div className="mx-auto max-w-5xl px-6 md:px-10">
-        <p className="mb-3 text-[11px] tracking-label text-accent uppercase">
+        <p className="edu-eyebrow mb-3 text-[11px] tracking-label text-accent uppercase">
           Education
         </p>
-        <h2 className="font-serif-display text-3xl text-frost sm:text-4xl">
+        <h2 className="edu-title font-serif-display text-3xl text-frost sm:text-4xl">
           Foundations.
         </h2>
 
@@ -366,41 +577,59 @@ function EducationSection() {
           {/* SVG snake path (behind everything) */}
           <svg
             className="edu-snake-svg"
-            viewBox="0 0 400 900"
+            viewBox="0 0 400 790"
             preserveAspectRatio="none"
             aria-hidden="true"
           >
             <defs>
               <linearGradient id="snakeGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#00e5b0" stopOpacity="1" />
+
                 <stop offset="70%" stopColor="#00e5b0" stopOpacity="0.7" />
+
                 <stop offset="100%" stopColor="#00e5b0" stopOpacity="0.15" />
               </linearGradient>
             </defs>
 
-            {/* Faint track (always visible) */}
+            {/* FAINT SNAKE TRACK */}
+
             <path
-              d="M 200 20
-                 C 200 90, 60 120, 60 200
-                 C 60 280, 340 300, 340 380
-                 C 340 460, 60 480, 60 560
-                 C 60 640, 340 660, 340 740
-                 C 340 820, 200 860, 200 880"
+              d="
+      M 200 20
+
+      C 200 90, 60 120, 60 200
+
+      C 60 280, 340 300, 340 380
+
+      C 340 460, 60 480, 60 560
+
+      C 60 640, 340 660, 340 740
+
+      L 340 770
+    "
               fill="none"
               stroke="rgba(255,255,255,0.08)"
               strokeWidth="2"
               strokeLinecap="round"
             />
 
-            {/* Animated snake fill */}
+            {/* ANIMATED SNAKE */}
+
             <path
               ref={pathRef}
-              d="M 200 20
-                 C 200 90, 60 120, 60 200
-                 C 60 280, 340 300, 340 380
-                 C 340 460, 60 480, 60 560
-                 C 60 640, 340 660, 340 740
-                 C 340 820, 200 860, 200 880"
+              d="
+      M 200 20
+
+      C 200 90, 60 120, 60 200
+
+      C 60 280, 340 300, 340 380
+
+      C 340 460, 60 480, 60 560
+
+      C 60 640, 340 660, 340 740
+
+      L 340 770
+    "
               fill="none"
               stroke="url(#snakeGrad)"
               strokeWidth="3"
@@ -408,6 +637,18 @@ function EducationSection() {
               style={{
                 filter:
                   "drop-shadow(0 0 6px rgba(0, 229, 176, 0.8)) drop-shadow(0 0 14px rgba(0, 229, 176, 0.4))",
+              }}
+            />
+
+            {/* END POINT */}
+
+            <circle
+              cx="340"
+              cy="770"
+              r="4"
+              fill="#00e5b0"
+              style={{
+                filter: "drop-shadow(0 0 6px rgba(0, 229, 176, 0.9))",
               }}
             />
           </svg>
@@ -446,43 +687,245 @@ function EducationSection() {
 
 function CertificationsSection() {
   const sectionRef = useRef(null);
+
   useEffect(() => {
+    const reduced = prefersReducedMotion();
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".cert-card",
-        { opacity: 0, y: 18 },
-        {
+      /* Eyebrow from left */
+      reveal(".cert-eyebrow", {
+        direction: "left",
+        distance: reduced ? 0 : 55,
+        blur: reduced ? 0 : 7,
+        duration: reduced ? 0.3 : 1,
+        trigger: sectionRef.current,
+        start: "top 80%",
+        cinematic: true,
+      });
+
+      /* Title from bottom */
+      reveal(".cert-title", {
+        direction: "bottom",
+        distance: reduced ? 0 : 80,
+        blur: reduced ? 0 : 11,
+        scale: reduced ? 1 : 0.95,
+        duration: reduced ? 0.3 : 1.15,
+        delay: 0.08,
+        trigger: sectionRef.current,
+        start: "top 80%",
+        cinematic: true,
+      });
+
+      /* Glass cards — staggered from bottom with scale pop */
+      if (!reduced) {
+        gsap.fromTo(
+          ".cert-glass",
+          {
+            opacity: 0,
+            y: 50,
+            scale: 0.85,
+            filter: "blur(8px)",
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 0.85,
+            ease: "power4.out",
+            stagger: 0.1,
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top 78%",
+              once: true,
+            },
+            onComplete: () => {
+              gsap.set(".cert-glass", {
+                clearProps: "filter,willChange",
+              });
+            },
+          },
+        );
+      } else {
+        gsap.set(".cert-glass", {
           opacity: 1,
           y: 0,
-          duration: 0.6,
-          ease: "power3.out",
-          stagger: 0.08,
-          scrollTrigger: { trigger: sectionRef.current, start: "top 78%" },
-        },
-      );
+          scale: 1,
+          filter: "none",
+        });
+      }
     }, sectionRef);
     return () => ctx.revert();
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative bg-ink py-24">
-      <div className="mx-auto max-w-5xl px-6 md:px-10">
-        <p className="mb-3 text-[11px] tracking-label text-accent uppercase">
+    <section ref={sectionRef} className="relative bg-ink py-24 overflow-hidden">
+      {/* Ambient glow behind the glass row */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute left-1/4 top-1/3 h-72 w-72 rounded-full bg-accent/10 blur-[110px]" />
+        <div className="absolute right-1/4 bottom-0 h-72 w-72 rounded-full bg-indigo-500/10 blur-[110px]" />
+      </div>
+
+      <style>{`
+        .cert-container {
+          position: relative;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0;
+          padding: 40px 0;
+        }
+
+        .cert-glass {
+          position: relative;
+          width: 180px;
+          height: 200px;
+          background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.14) 0%,
+            rgba(255, 255, 255, 0) 100%
+          );
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 0 25px 25px rgba(0, 0, 0, 0.45);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          transition: 0.5s ease;
+          border-radius: 14px;
+          margin: 0 -45px;
+          backdrop-filter: blur(10px) saturate(140%);
+          -webkit-backdrop-filter: blur(10px) saturate(140%);
+          transform: rotate(calc(var(--r) * 1deg));
+          cursor: pointer;
+          overflow: hidden;
+        }
+
+        /* Dark glass base tint */
+        .cert-glass::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: rgba(8, 10, 14, 0.45);
+          border-radius: 14px;
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        .cert-container:hover .cert-glass {
+          transform: rotate(0deg);
+          margin: 0 10px;
+          border-color: rgba(0, 229, 176, 0.35);
+          box-shadow:
+            0 25px 45px rgba(0, 0, 0, 0.55),
+            0 0 0 1px rgba(0, 229, 176, 0.15);
+        }
+
+        /* Individual hover lift */
+        .cert-glass:hover {
+          transform: rotate(0deg) translateY(-10px) scale(1.05) !important;
+          z-index: 5;
+        }
+
+        /* Label strip at the bottom */
+        .cert-glass::before {
+          content: attr(data-text);
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 44px;
+          background: rgba(255, 255, 255, 0.05);
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #f0f4f8;
+          font-family: 'Lucida Sans', 'Lucida Sans Regular', sans-serif;
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          text-align: center;
+          padding: 0 8px;
+          z-index: 2;
+          backdrop-filter: blur(4px);
+        }
+
+        /* Icon */
+        .cert-glass svg {
+          font-size: 2.5em;
+          width: 42px;
+          height: 42px;
+          fill: #ffffff;
+          position: relative;
+          z-index: 1;
+          transition: 0.4s ease;
+          filter: drop-shadow(0 4px 12px rgba(0, 229, 176, 0.25));
+        }
+
+        .cert-glass:hover svg {
+          fill: #00e5b0;
+          transform: scale(1.1);
+        }
+
+        /* Mobile — stack them without rotation/overlap */
+        @media (max-width: 640px) {
+          .cert-container {
+            flex-direction: column;
+            gap: 16px;
+          }
+          .cert-glass {
+            margin: 0 !important;
+            transform: rotate(0deg) !important;
+            width: 90%;
+            max-width: 260px;
+            height: 130px;
+            flex-direction: row;
+            justify-content: flex-start;
+            padding-left: 24px;
+          }
+          .cert-glass::before {
+            width: auto;
+            height: 100%;
+            left: auto;
+            right: 0;
+            padding: 0 18px;
+            border-top: none;
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+          }
+        }
+      `}</style>
+
+      <div className="relative z-10 mx-auto max-w-5xl px-6 md:px-10">
+        <p className="cert-eyebrow mb-3 text-[11px] tracking-label text-accent uppercase">
           Certifications
         </p>
-        <h2 className="font-serif-display text-3xl text-frost sm:text-4xl">
+        <h2 className="cert-title font-serif-display text-3xl text-frost sm:text-4xl">
           Continued learning.
         </h2>
 
-        <div className="mt-12 grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {CERTIFICATIONS.map((c) => (
-            <div
-              key={c}
-              className="cert-card rounded-xl border border-white/8 bg-steel/30 px-6 py-4 text-sm text-frost/90"
-            >
-              {c}
-            </div>
-          ))}
+        <div className="cert-container mt-12">
+          {CERTIFICATIONS.map((c, i) => {
+            // alternate rotation angles like the original
+            const rotations = [-15, 5, 25, -10, 15, -20];
+            const r = rotations[i % rotations.length];
+
+            return (
+              <div
+                key={c}
+                data-text={c}
+                style={{ "--r": r }}
+                className="cert-glass"
+              >
+                <svg
+                  viewBox="0 0 576 512"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M64 64C28.7 64 0 92.7 0 128V384c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V128c0-35.3-28.7-64-64-64H64zm64 320H64V320c35.3 0 64 28.7 64 64zM64 192V128h64c0 35.3-28.7 64-64 64zM448 384c0-35.3 28.7-64 64-64v64H448zm64-192c-35.3 0-64-28.7-64-64h64v64zM288 160a96 96 0 1 1 0 192 96 96 0 1 1 0-192z" />
+                </svg>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
@@ -493,19 +936,68 @@ function ContactSection() {
   const sectionRef = useRef(null);
 
   useEffect(() => {
+    const reduced = prefersReducedMotion();
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".contact-reveal",
-        { opacity: 0, y: 20 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.1,
-          scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
-        },
-      );
+      /* Eyebrow from left */
+      reveal(".contact-eyebrow", {
+        direction: "left",
+        distance: reduced ? 0 : 55,
+        blur: reduced ? 0 : 7,
+        duration: reduced ? 0.3 : 1,
+        trigger: sectionRef.current,
+        start: "top 78%",
+        cinematic: true,
+      });
+
+      /* Heading from bottom, cinematic */
+      reveal(".contact-title", {
+        direction: "bottom",
+        distance: reduced ? 0 : 100,
+        blur: reduced ? 0 : 13,
+        scale: reduced ? 1 : 0.93,
+        duration: reduced ? 0.3 : 1.3,
+        delay: 0.08,
+        trigger: sectionRef.current,
+        start: "top 78%",
+        cinematic: true,
+      });
+
+      /* Glass card — from left with depth */
+      reveal(".contact-card", {
+        direction: "left",
+        distance: reduced ? 0 : 100,
+        blur: reduced ? 0 : 10,
+        scale: reduced ? 1 : 0.95,
+        duration: reduced ? 0.3 : 1.2,
+        delay: 0.2,
+        trigger: sectionRef.current,
+        start: "top 78%",
+        cinematic: true,
+      });
+
+      /* Info block — from right */
+      reveal(".contact-info", {
+        direction: "right",
+        distance: reduced ? 0 : 90,
+        blur: reduced ? 0 : 9,
+        duration: reduced ? 0.3 : 1.15,
+        delay: 0.3,
+        trigger: sectionRef.current,
+        start: "top 78%",
+        cinematic: true,
+      });
+
+      /* Individual contact rows — staggered */
+      reveal(".contact-row", {
+        direction: "right",
+        distance: reduced ? 0 : 50,
+        blur: reduced ? 0 : 5,
+        duration: reduced ? 0.3 : 0.85,
+        stagger: 0.1,
+        delay: 0.45,
+        trigger: sectionRef.current,
+        start: "top 78%",
+      });
     }, sectionRef);
     return () => ctx.revert();
   }, []);
@@ -519,10 +1011,10 @@ function ContactSection() {
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         {/* Header — centered */}
         <div className="text-center">
-          <p className="contact-reveal mb-4 text-[11px] tracking-label text-accent uppercase">
+          <p className="contact-eyebrow mb-4 text-[11px] tracking-label text-accent uppercase">
             Contact
           </p>
-          <h2 className="contact-reveal font-serif-display text-3xl text-balance text-frost sm:text-5xl">
+          <h2 className="contact-title font-serif-display text-3xl text-balance text-frost sm:text-5xl">
             Let's build something great.
           </h2>
         </div>
@@ -530,8 +1022,7 @@ function ContactSection() {
         {/* Two-column: dark glass MV card (left) + contact info (right) */}
         <div className="mt-16 grid grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-16">
           {/* LEFT: Dark glass MV card */}
-          {/* LEFT: Dark glass MV card */}
-          <div className="contact-reveal flex justify-center md:justify-start">
+          <div className="contact-card flex justify-center md:justify-start">
             <div className="parent">
               <div className="card">
                 <div className="logo">
@@ -636,7 +1127,7 @@ function ContactSection() {
           </div>
 
           {/* RIGHT: Contact info */}
-          <div className="contact-reveal flex flex-col items-center gap-6 text-center md:items-start md:text-left">
+          <div className="contact-info flex flex-col items-center gap-6 text-center md:items-start md:text-left">
             <div>
               <p className="text-[11px] tracking-label text-accent uppercase">
                 Get in touch
@@ -651,7 +1142,7 @@ function ContactSection() {
             <div className="flex flex-col gap-4">
               <a
                 href="mailto:mohanvenkateshkumar@gmail.com"
-                className="group flex items-center gap-3 text-sm text-mist transition hover:text-frost"
+                className="contact-row group flex items-center gap-3 text-sm text-mist transition hover:text-frost"
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition group-hover:border-accent/50 group-hover:bg-accent/10">
                   <svg
@@ -674,7 +1165,7 @@ function ContactSection() {
 
               <a
                 href="tel:+916380246563"
-                className="group flex items-center gap-3 text-sm text-mist transition hover:text-frost"
+                className="contact-row group flex items-center gap-3 text-sm text-mist transition hover:text-frost"
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 transition group-hover:border-accent/50 group-hover:bg-accent/10">
                   <svg
@@ -694,7 +1185,7 @@ function ContactSection() {
                 <span>+91 6380246563</span>
               </a>
 
-              <div className="group flex items-center gap-3 text-sm text-mist">
+              <div className="contact-row group flex items-center gap-3 text-sm text-mist">
                 <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -723,19 +1214,78 @@ function ContactSection() {
 
 function FooterBar() {
   const year = new Date().getFullYear();
+  const sectionRef = useRef(null);
+
+  useEffect(() => {
+    const reduced = prefersReducedMotion();
+    const ctx = gsap.context(() => {
+      /* Left brand block — from left */
+      reveal(".footer-brand", {
+        direction: "left",
+        distance: reduced ? 0 : 60,
+        blur: reduced ? 0 : 7,
+        duration: reduced ? 0.3 : 1,
+        trigger: sectionRef.current,
+        start: "top 88%",
+      });
+
+      /* Brand lines — staggered */
+      reveal(".footer-brand-line", {
+        direction: "left",
+        distance: reduced ? 0 : 40,
+        blur: reduced ? 0 : 4,
+        duration: reduced ? 0.3 : 0.8,
+        stagger: 0.1,
+        delay: 0.1,
+        trigger: sectionRef.current,
+        start: "top 88%",
+      });
+
+      /* Social buttons — pop in */
+      reveal(".footer-social-btn", {
+        direction: "bottom",
+        distance: reduced ? 0 : 40,
+        blur: reduced ? 0 : 5,
+        scale: reduced ? 1 : 0.9,
+        duration: reduced ? 0.3 : 0.75,
+        stagger: 0.08,
+        delay: 0.2,
+        trigger: sectionRef.current,
+        start: "top 88%",
+      });
+
+      /* Glass card — from right, cinematic */
+      reveal(".footer-card-wrapper", {
+        direction: "right",
+        distance: reduced ? 0 : 100,
+        blur: reduced ? 0 : 12,
+        scale: reduced ? 1 : 0.94,
+        duration: reduced ? 0.3 : 1.2,
+        delay: 0.15,
+        trigger: sectionRef.current,
+        start: "top 88%",
+        cinematic: true,
+      });
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <footer className="footer-bar relative border-t border-white/8 bg-ink py-16 overflow-hidden">
+    <footer
+      ref={sectionRef}
+      className="footer-bar relative border-t border-white/8 bg-ink py-16 overflow-hidden"
+    >
       <div className="mx-auto max-w-7xl px-6 md:px-10">
         <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2">
           {/* Left: brand info */}
-          <div className="flex flex-col items-center text-center md:items-start md:text-left">
-            <p className="text-sm font-semibold tracking-label text-frost">
+          <div className="footer-brand flex flex-col items-center text-center md:items-start md:text-left">
+            <p className="footer-brand-line text-sm font-semibold tracking-label text-frost">
               MOHAN VENKATESHKUMAR
             </p>
-            <p className="mt-1 text-[11px] tracking-label text-mist uppercase">
+            <p className="footer-brand-line mt-1 text-[11px] tracking-label text-mist uppercase">
               Python Developer
             </p>
-            <p className="mt-3 text-xs text-mist/70">
+            <p className="footer-brand-line mt-3 text-xs text-mist/70">
               Python &middot; Django &middot; DRF &middot; PostgreSQL &middot;
               Redis &middot; React
             </p>
@@ -743,7 +1293,7 @@ function FooterBar() {
             {/* Social row */}
             <div className="mt-6 flex items-center gap-3">
               <a
-                href="https://instagram.com/"
+                href="https://www.instagram.com/_mr_looser___07?stkn=bXQxaXo5d3J1cHU0"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Instagram"

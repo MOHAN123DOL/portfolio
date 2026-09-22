@@ -58,7 +58,9 @@ function ProjectMock({ labels }) {
           className="flex flex-col justify-between rounded-lg border border-white/10 bg-white/5 p-3"
         >
           <div className="h-1.5 w-8 rounded-full bg-accent/60" />
-          <span className="text-[10px] tracking-label text-mist uppercase">{l}</span>
+          <span className="text-[10px] tracking-label text-mist uppercase">
+            {l}
+          </span>
           <div className="space-y-1.5">
             <div className="h-1 w-full rounded-full bg-white/10" />
             <div className="h-1 w-2/3 rounded-full bg-white/10" />
@@ -68,30 +70,34 @@ function ProjectMock({ labels }) {
     </div>
   );
 }
-
 function StackedProjectCards() {
   const containerRef = useRef(null);
   const cardRefs = useRef([]);
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
+
     const ctx = gsap.context(() => {
       cardRefs.current.forEach((card, i) => {
-        if (!card || i === cardRefs.current.length - 1) return;
-        gsap.to(card, {
-          scale: 0.94,
-          opacity: 0.5,
-          filter: "blur(2px)",
+        if (!card || i === 0) return;
+
+        const previousCard = cardRefs.current[i - 1];
+
+        gsap.to(previousCard, {
+          opacity: 0,
+          scale: 0.96,
+          filter: "blur(4px)",
           ease: "none",
           scrollTrigger: {
-            trigger: cardRefs.current[i + 1],
+            trigger: card,
             start: "top 85%",
-            end: "top 20%",
+            end: "top 35%",
             scrub: true,
           },
         });
       });
     }, containerRef);
+
     return () => ctx.revert();
   }, []);
 
@@ -101,25 +107,39 @@ function StackedProjectCards() {
         <div
           key={p.id}
           className="sticky top-24 mb-8 flex justify-center"
-          style={{ zIndex: i + 1 }}
+          style={{
+            zIndex: i + 1,
+          }}
         >
           <div
-            ref={(el) => (cardRefs.current[i] = el)}
+            ref={(el) => {
+              cardRefs.current[i] = el;
+            }}
             className="glass-panel w-full max-w-4xl rounded-2xl p-6 shadow-2xl shadow-black/40 sm:p-8"
-            style={{ transformOrigin: "top center" }}
+            style={{
+              transformOrigin: "top center",
+              opacity: i === 0 ? 1 : 1,
+            }}
           >
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-center">
+              {/* LEFT */}
               <div>
                 <span className="text-[11px] tracking-label text-accent">
                   Project {p.id}
                 </span>
+
                 <h3 className="mt-3 font-serif-display text-2xl text-frost sm:text-3xl">
                   {p.title}
                 </h3>
-                <p className="mt-1 text-[11px] tracking-label text-mist uppercase">{p.tag}</p>
+
+                <p className="mt-1 text-[11px] tracking-label text-mist uppercase">
+                  {p.tag}
+                </p>
+
                 <p className="mt-4 max-w-md text-sm leading-relaxed text-mist">
                   {p.description}
                 </p>
+
                 <div className="mt-5 flex flex-wrap gap-2">
                   {p.stack.map((s) => (
                     <span
@@ -131,6 +151,8 @@ function StackedProjectCards() {
                   ))}
                 </div>
               </div>
+
+              {/* RIGHT */}
               <div className="h-40 overflow-hidden rounded-xl border border-white/10 bg-navy/60 sm:h-48">
                 <ProjectMock labels={p.mock} />
               </div>
@@ -141,7 +163,6 @@ function StackedProjectCards() {
     </div>
   );
 }
-
 function ProjectsSection() {
   const sectionRef = useRef(null);
 
@@ -156,7 +177,7 @@ function ProjectsSection() {
           duration: 0.9,
           ease: "power3.out",
           scrollTrigger: { trigger: sectionRef.current, start: "top 75%" },
-        }
+        },
       );
     }, sectionRef);
     return () => ctx.revert();
@@ -174,7 +195,9 @@ function ProjectsSection() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 md:px-10">
         <div className="projects-heading mb-16 max-w-xl">
-          <p className="mb-3 text-[11px] tracking-label text-accent uppercase">Projects</p>
+          <p className="mb-3 text-[11px] tracking-label text-accent uppercase">
+            Projects
+          </p>
           <h2 className="font-serif-display text-3xl text-frost sm:text-4xl">
             Ideas, built into systems.
           </h2>

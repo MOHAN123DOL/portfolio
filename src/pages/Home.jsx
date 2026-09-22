@@ -18,7 +18,7 @@ export default function Home() {
     <>
       {!introDone && <WelcomeIntro onFinish={() => setIntroDone(true)} />}
       <main className="bg-ink">
-        <Hero />
+        <Hero showWelcome={introDone} />
         <Projects />
         <Footer />
       </main>

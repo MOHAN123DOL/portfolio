@@ -23,6 +23,7 @@
   html {
     scroll-behavior: smooth;
     background: var(--color-ink);
+    scrollbar-gutter: stable;
   }
   body {
     margin: 0;
@@ -66,12 +67,29 @@
     scrollbar-width: none;
   }
 
+  /*
+    Vignette — uses a GPU-friendly radial-gradient instead of an
+    inset box-shadow. The inset box-shadow forced the entire hero
+    overlay stack (video + vignette + gradient + text) to repaint
+    every frame, which made the hero text visually jitter while
+    Spider-Man was dropping. A radial-gradient composites for free.
+  */
   .vignette {
-    box-shadow: inset 0 0 18vw 4vw rgba(0, 0, 0, 0.55);
+    background: radial-gradient(
+      ellipse at center,
+      transparent 45%,
+      rgba(0, 0, 0, 0.35) 75%,
+      rgba(0, 0, 0, 0.6) 100%
+    );
+    pointer-events: none;
   }
 
   .glass-panel {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.06),
+      rgba(255, 255, 255, 0.02)
+    );
     border: 1px solid rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
@@ -97,9 +115,7 @@
    DESKTOP PILL — visible at sm (640px) and up
    IMPORTANT: do NOT add `display` here.
    Tailwind's `hidden sm:inline-flex` on the element must control it.
- /* ================================================================
-   DESKTOP GLASS NAV — PERFECT 5 EQUAL TABS
-================================================================ */
+   ---------------------------------------------------------------- */
 
 .glass-tabs-wrapper {
   align-items: center;
@@ -123,7 +139,6 @@
   overflow: hidden;
 }
 
-
 /* ------------------------------------------------
    TABS CONTAINER
 ------------------------------------------------ */
@@ -133,14 +148,12 @@
 
   display: grid;
 
-  grid-template-columns:
-    repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 
   align-items: center;
 
   width: 460px;
 }
-
 
 /* ------------------------------------------------
    EACH TAB
@@ -180,8 +193,7 @@
 
   text-decoration: none;
 
-  transition:
-    color 0.25s ease;
+  transition: color 0.25s ease;
 
   white-space: nowrap;
 }
@@ -194,7 +206,6 @@
   color: #eef1f6;
 }
 
-
 /* ------------------------------------------------
    ACTIVE BUBBLE
 ------------------------------------------------ */
@@ -203,7 +214,6 @@
   position: absolute;
 
   top: 0;
-
   left: 0;
 
   z-index: 1;
@@ -225,15 +235,16 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     inset 0 -1px 0 rgba(0, 0, 0, 0.15);
 
-  transition:
-    left 0.35s cubic-bezier(0.65, 0, 0.35, 1);
+  transition: left 0.35s cubic-bezier(0.65, 0, 0.35, 1);
 
   pointer-events: none;
 }
+
 /* ----------------------------------------------------------------
    MOBILE BAR — visible below sm (640px)
    IMPORTANT: do NOT add `display` here either.
    ---------------------------------------------------------------- */
+
 .glass-mobile-wrapper {
   width: 100%;
   max-width: 420px;
@@ -384,14 +395,17 @@
 
 /* --- Card shell: the glass plate --- */
 .tech-card {
-  background: rgba(255, 255, 255, 0.04);          /* lighter tint so image shows */
-  backdrop-filter: blur(16px) saturate(200%);     /* higher saturation pulls image colors through */
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px) saturate(200%);
   -webkit-backdrop-filter: blur(16px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.22);    /* brighter rim = reads as glass */
+  border: 1px solid rgba(255, 255, 255, 0.22);
   box-shadow:
     0 8px 24px -10px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28),      /* top highlight */
-    inset 0 -1px 0 rgba(0, 0, 0, 0.2);            /* bottom shadow */
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
   transition:
     background 0.4s ease,
     border-color 0.4s ease,
@@ -419,7 +433,7 @@
   border-radius: 50%;
   filter: blur(26px);
   opacity: 0.95;
-  z-index: 0;                                     /* behind inner overlay */
+  z-index: 0;
   pointer-events: none;
   background: radial-gradient(
     circle at 40% 40%,
@@ -436,15 +450,14 @@
   opacity: 1;
 }
 
-/* --- Inner glass highlight — light sheen, NO heavy dark overlay --- */
+/* --- Inner glass highlight — matches card radius so all 4 corners line up --- */
 .tech-inner {
   position: absolute;
-  inset: 1px;
+  inset: 0;
   z-index: 1;
-  border-radius: 11px;
+  border-radius: 24px;
   pointer-events: none;
 
-  /* Diagonal sheen only — very light, so image behind stays visible */
   background: linear-gradient(
     155deg,
     rgba(255, 255, 255, 0.18) 0%,
@@ -454,7 +467,7 @@
   );
 
   border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(3px);                     /* tiny extra blur inside the pane */
+  backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
@@ -487,7 +500,116 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tech-aurora { animation: none; }
+  .tech-aurora {
+    animation: none;
+  }
 }
 
+html {
+  scroll-behavior: smooth;
+}
 
+body {
+  margin: 0;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   SECOND VIDEO
+   FULL SCREEN WIDTH + BLACK BACKGROUND
+========================================================= */
+
+.second-video {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center center;
+
+  background: #000;
+
+  display: block;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 640px) {
+  .second-video {
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center center;
+
+    background: #000;
+  }
+}
+
+.second-video-line-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 8px;
+  background: #000;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.portfolio-welcome {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.03)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+  padding: 0.7rem 1.3rem;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #eef1f6;
+
+  opacity: 0;
+  transform: translateY(12px) scale(0.96);
+  animation: portfolio-welcome-in 0.5s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  pointer-events: none;
+}
+
+.portfolio-welcome--leaving {
+  animation: portfolio-welcome-out 0.28s ease forwards;
+}
+
+@keyframes portfolio-welcome-in {
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes portfolio-welcome-out {
+  to { opacity: 0; transform: translateY(8px) scale(0.96); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-welcome { animation: none; opacity: 1; transform: none; }
+  .portfolio-welcome--leaving { animation: none; opacity: 0; }
+}
