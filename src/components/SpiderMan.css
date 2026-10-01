@@ -1224,6 +1224,42 @@
   }
 
   /* -------------------------------------------------------
+     ENTRANCE DROP (mobile)
+     The desktop spiderComeDown keyframes use translateY(-50%)
+     and have no scale(.65). On mobile the button sits at
+     top: 5px and is scaled, so during the first 1.5s on page
+     load he appeared full-size, shifted up and clipped by the
+     top of the screen, then jumped into place. Re-declaring
+     the SAME keyframe name here (later rule wins) makes the
+     mobile drop-in use the correct scale + resting position,
+     so no JS changes are needed.
+  ------------------------------------------------------- */
+  @keyframes spiderComeDown {
+    0% {
+      opacity: 0;
+      transform: translate(0, -100vh) scale(.65);
+    }
+    35% {
+      opacity: 1;
+      transform: translate(0, -120px) scale(.65);
+    }
+    65% {
+      transform: translate(0, 60px) scale(.65);
+    }
+    78% {
+      transform: translate(0, -15px) scale(.65);
+    }
+    90% {
+      opacity: 1;
+      transform: translate(0, 8px) scale(.65);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(0, 0) scale(.65);
+    }
+  }
+
+  /* -------------------------------------------------------
      WELCOME BUBBLE
      On mobile Spider-Man sits at the TOP-right corner, not
      the vertical middle. The bubble used to stay at
