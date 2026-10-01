@@ -1173,7 +1173,8 @@
 }
 
 /* =========================================================
-   MOBILE
+   MOBILE  (Spider-Man itself is unchanged from before)
+   Only the welcome bubble + popup are made responsive.
 ========================================================= */
 
 @media screen and (max-width: 600px) {
@@ -1222,20 +1223,43 @@
     }
   }
 
+  /* -------------------------------------------------------
+     WELCOME BUBBLE
+     On mobile Spider-Man sits at the TOP-right corner, not
+     the vertical middle. The bubble used to stay at
+     top: 50%, so it floated far away from him. Now it is
+     pinned next to him at the top.
+  ------------------------------------------------------- */
   .spiderman-bubble {
-    right: 105px;
-    max-width: 190px;
-    padding: 10px 30px 10px 12px;
+    top: 58px;
+    right: 66px;
+
+    width: max-content;
+    max-width: min(200px, calc(100vw - 86px));
+
+    padding: 10px 32px 10px 12px;
   }
 
   .spiderman-bubble__text {
     font-size: 11px;
+    overflow-wrap: anywhere;
   }
 
+  .spiderman-bubble__close {
+    width: 24px;
+    height: 24px;
+
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  /* -------------------------------------------------------
+     MESSAGE POPUP
+  ------------------------------------------------------- */
   .spiderman-message {
     top: 125px;
-    left: 15px;
-    right: 15px;
+    left: max(15px, env(safe-area-inset-left));
+    right: max(15px, env(safe-area-inset-right));
 
     width: auto;
     max-width: none;
@@ -1244,6 +1268,15 @@
 
     padding: 27px 20px 20px;
     border-radius: 16px;
+
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  @supports (height: 100dvh) {
+    .spiderman-message {
+      max-height: calc(100dvh - 140px);
+    }
   }
 
   .spiderman-message::before {
@@ -1254,16 +1287,47 @@
     font-size: 32px;
   }
 
+  .message-small {
+    font-size: 10px;
+  }
+
   .message-role {
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .spiderman-message p {
-    font-size: 11px;
+    font-size: 12px;
+  }
+
+  .message-skills span {
+    font-size: 9px;
   }
 
   .message-links {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .message-links a,
+  .message-links button,
+  .resume-button,
+  .message-button,
+  .whatsapp-button {
+    font-size: 10px;
+  }
+
+  .back-button {
+    font-size: 10px;
+    padding: 6px 0;
+  }
+
+  /* 16px stops iOS Safari from zooming the page on focus */
+  .spiderman-message form label {
+    font-size: 9px;
+  }
+
+  .spiderman-message form input,
+  .spiderman-message form textarea {
+    font-size: 16px;
   }
 }
 
@@ -1272,23 +1336,55 @@
 ========================================================= */
 
 @media screen and (max-width: 380px) {
+  .spiderman-bubble {
+    right: 62px;
+    max-width: min(180px, calc(100vw - 80px));
+  }
+
   .spiderman-message {
-    left: 10px;
-    right: 10px;
+    left: max(10px, env(safe-area-inset-left));
+    right: max(10px, env(safe-area-inset-right));
     padding: 25px 17px 17px;
   }
 
   .spiderman-message h2 {
-    font-size: 29px;
+    font-size: 28px;
   }
 
   .message-role {
-    font-size: 7px;
+    font-size: 8px;
   }
 
   .message-links a,
   .message-links button {
-    font-size: 8px;
+    font-size: 9px;
+    letter-spacing: .06em;
+  }
+}
+
+/* =========================================================
+   SHORT SCREENS (phones in landscape)
+   Popup was being squeezed to almost nothing because its
+   height was calc(100vh - 190px).
+========================================================= */
+
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .spiderman-message {
+    top: 10px;
+    right: 10px;
+
+    width: min(420px, calc(100vw - 20px));
+    max-height: calc(100vh - 20px);
+  }
+
+  @supports (height: 100dvh) {
+    .spiderman-message {
+      max-height: calc(100dvh - 20px);
+    }
+  }
+
+  .spiderman-message::before {
+    display: none;
   }
 }
 
