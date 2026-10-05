@@ -12,7 +12,6 @@ import firstVideo from "../assets/first.mp4";
 import resumeFile from "../assets/Mohan_Venkateshkumar_Resume.pdf";
 import mohan5 from "../assets/mohan5.png";
 
-
 const NAV_LINKS = [
   { label: "Home", href: "#home", id: "home" },
   { label: "About", href: "#about", id: "about" },
@@ -21,16 +20,7 @@ const NAV_LINKS = [
   { label: "Contact", href: "#contact", id: "contact" },
 ];
 
-
-const HERO_STACK = [
-  "PYTHON",
-  "DJANGO",
-  "DRF",
-  "POSTGRESQL",
-  "REDIS",
-  "REACT",
-];
-
+const HERO_STACK = ["PYTHON", "DJANGO", "DRF", "POSTGRESQL", "REDIS", "REACT"];
 
 /* =========================================================
    TECHNOLOGIES
@@ -144,14 +134,35 @@ const TECHNOLOGIES = [
   },
 ];
 
-
 /* =========================================================
    GLASS NAV
 ========================================================= */
 
+const MOBILE_NAV_ICONS = {
+  home: {
+    viewBox: "0 0 21 20",
+    d: "M18.9999 6.01002L12.4499 0.770018C11.1699 -0.249982 9.16988 -0.259982 7.89988 0.760018L1.34988 6.01002C0.409885 6.76002 -0.160115 8.26002 0.0398848 9.44002L1.29988 16.98C1.58988 18.67 3.15988 20 4.86988 20H15.4699C17.1599 20 18.7599 18.64 19.0499 16.97L20.3099 9.43002C20.4899 8.26002 19.9199 6.76002 18.9999 6.01002ZM10.9199 16C10.9199 16.41 10.5799 16.75 10.1699 16.75C9.75988 16.75 9.41988 16.41 9.41988 16V13C9.41988 12.59 9.75988 12.25 10.1699 12.25C10.5799 12.25 10.9199 12.59 10.9199 13V16Z",
+  },
+  about: {
+    viewBox: "0 0 24 24",
+    d: "M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm0 2c-4.4 0-8 2.2-8 5v1.2c0 .5.4.8.8.8h14.4c.5 0 .8-.3.8-.8V19c0-2.8-3.6-5-8-5Z",
+  },
+  projects: {
+    viewBox: "0 0 24 24",
+    d: "M4 3h6a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Zm10 0h6a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM4 13h6a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1Zm10 0h6a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1Z",
+  },
+  experience: {
+    viewBox: "0 0 24 24",
+    d: "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm.9 5.5v4.2l3 1.8a.9.9 0 0 1-.9 1.6l-3.4-2a1 1 0 0 1-.5-.9V7.5a.9.9 0 0 1 1.8 0Z",
+  },
+  contact: {
+    viewBox: "0 0 24 24",
+    d: "M5 4h14a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Zm-.2 3.1 7.2 5.3 7.2-5.3-1-1.4L12 9.9 5.8 5.7Z",
+  },
+};
+
 function GlassNav() {
   const [activeSection, setActiveSection] = useState("home");
-  const [open, setOpen] = useState(false);
 
   const navRef = useRef(null);
 
@@ -183,11 +194,7 @@ function GlassNav() {
       (entries) => {
         const visible = entries
           .filter((entry) => entry.isIntersecting)
-          .sort(
-            (a, b) =>
-              a.boundingClientRect.top -
-              b.boundingClientRect.top,
-          );
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
 
         if (visible[0]) {
           setActiveSection(visible[0].target.id);
@@ -204,184 +211,106 @@ function GlassNav() {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
-
   const handleLinkClick = (id) => {
     setActiveSection(id);
-    setOpen(false);
   };
 
   const activeIndex = Math.max(
     0,
-    NAV_LINKS.findIndex(
-      (link) => link.id === activeSection,
-    ),
+    NAV_LINKS.findIndex((link) => link.id === activeSection),
   );
 
   return (
-    <div
-      ref={navRef}
-      className="glass-nav fixed inset-x-0 top-4 z-50 flex justify-center px-4 pointer-events-none sm:top-6"
-    >
+    <>
+      <div
+        ref={navRef}
+        className="glass-nav fixed inset-x-0 top-4 z-50 flex justify-center px-4 pointer-events-none sm:top-6"
+      >
+        {/* =====================================================
+            DESKTOP NAV
+        ===================================================== */}
+
+        <div className="glass-tabs-wrapper hidden pointer-events-auto sm:inline-flex">
+          <div className="tabs" role="tablist">
+            {NAV_LINKS.map((link) => {
+              const isActive = link.id === activeSection;
+
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  role="tab"
+                  aria-selected={isActive}
+                  onClick={() => setActiveSection(link.id)}
+                  className={"tab" + (isActive ? " tab--active" : "")}
+                >
+                  {link.label}
+                </a>
+              );
+            })}
+
+            <span
+              className="glider"
+              style={{
+                left: `${activeIndex * 20}%`,
+              }}
+            />
+          </div>
+        </div>
+      </div>
 
       {/* =====================================================
-          DESKTOP NAV
+          MOBILE UIVERSE-STYLE BOTTOM NAV
+          Sibling of .glass-nav on purpose: the GSAP transform on
+          .glass-nav would otherwise break position: fixed.
       ===================================================== */}
 
-      <div className="glass-tabs-wrapper hidden pointer-events-auto sm:inline-flex">
-
-        <div className="tabs" role="tablist">
+      <nav
+        className="mobile-uiverse-nav sm:hidden"
+        aria-label="Mobile navigation"
+      >
+        <div
+          className="mobile-uiverse-nav-inner"
+          style={{ "--mobile-nav-index": activeIndex }}
+        >
+          <span className="mobile-uiverse-nav-glider" aria-hidden="true" />
 
           {NAV_LINKS.map((link) => {
-            const isActive =
-              link.id === activeSection;
+            const isActive = link.id === activeSection;
+            const icon = MOBILE_NAV_ICONS[link.id];
 
             return (
               <a
                 key={link.href}
                 href={link.href}
-                role="tab"
-                aria-selected={isActive}
-                onClick={() =>
-                  setActiveSection(link.id)
-                }
+                onClick={() => handleLinkClick(link.id)}
+                aria-current={isActive ? "location" : undefined}
                 className={
-                  "tab" +
-                  (isActive
-                    ? " tab--active"
-                    : "")
+                  "mobile-uiverse-nav-item" +
+                  (isActive ? " mobile-uiverse-nav-item-active" : "")
                 }
               >
-                {link.label}
+                <span className="mobile-uiverse-nav-icon" aria-hidden="true">
+                  {icon && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox={icon.viewBox}
+                      focusable="false"
+                    >
+                      <path fillRule="evenodd" d={icon.d} />
+                    </svg>
+                  )}
+                </span>
+
+                <span className="mobile-uiverse-nav-label">{link.label}</span>
               </a>
             );
           })}
-
-          <span
-            className="glider"
-            style={{
-              left: `${activeIndex * 20}%`,
-            }}
-          />
         </div>
-      </div>
-
-
-      {/* =====================================================
-          MOBILE NAV
-      ===================================================== */}
-
-      <div className="glass-mobile-wrapper pointer-events-auto sm:hidden">
-
-        <div className="glass-mobile-bar">
-
-          <a
-            href="#home"
-            onClick={() =>
-              handleLinkClick("home")
-            }
-            className="glass-mobile-logo"
-          >
-            MOHAN
-          </a>
-
-          <button
-            type="button"
-            aria-label="Toggle menu"
-            aria-expanded={open}
-            onClick={() =>
-              setOpen((value) => !value)
-            }
-            className="glass-mobile-toggle"
-          >
-            <span
-              className={
-                "glass-mobile-line" +
-                (open
-                  ? " glass-mobile-line--1"
-                  : "")
-              }
-            />
-
-            <span
-              className={
-                "glass-mobile-line" +
-                (open
-                  ? " glass-mobile-line--2"
-                  : "")
-              }
-            />
-
-            <span
-              className={
-                "glass-mobile-line" +
-                (open
-                  ? " glass-mobile-line--3"
-                  : "")
-              }
-            />
-          </button>
-
-        </div>
-
-
-        <div
-          className={
-            "glass-mobile-dropdown" +
-            (open
-              ? " glass-mobile-dropdown--open"
-              : "")
-          }
-        >
-
-          <div className="glass-mobile-dropdown-inner">
-
-            <nav className="glass-mobile-nav">
-
-              {NAV_LINKS.map((link) => {
-
-                const isActive =
-                  link.id === activeSection;
-
-                return (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    onClick={() =>
-                      handleLinkClick(link.id)
-                    }
-                    className={
-                      "glass-mobile-link" +
-                      (isActive
-                        ? " glass-mobile-link--active"
-                        : "")
-                    }
-                  >
-                    <span className="glass-mobile-link-dot" />
-                    {link.label}
-                  </a>
-                );
-
-              })}
-
-            </nav>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
+      </nav>
+    </>
   );
 }
-
 
 /* =========================================================
    HERO
@@ -401,7 +330,6 @@ function HeroSection({ showWelcome }) {
     if (!section) return undefined;
 
     const ctx = gsap.context(() => {
-
       /* Hero eyebrow — from left */
       const eyebrow = reveal(".hero-eyebrow", {
         direction: "left",
@@ -518,7 +446,6 @@ function HeroSection({ showWelcome }) {
           onDone();
         }
       });
-
     }, sectionRef);
 
     const video = videoRef.current;
@@ -528,7 +455,6 @@ function HeroSection({ showWelcome }) {
     }
 
     return () => {
-      
       ctx.kill();
     };
   }, []);
@@ -583,51 +509,49 @@ function HeroSection({ showWelcome }) {
   );
 
   return (
-  <section
-    ref={sectionRef}
-    id="home"
-    className="relative flex min-h-screen items-center overflow-hidden bg-ink pt-36 pb-16 sm:pt-28"
-  >
+    <section
+      ref={sectionRef}
+      id="home"
+      className="relative flex min-h-screen items-center overflow-hidden bg-ink pt-36 pb-16 sm:pt-28"
+    >
+      <video
+        ref={videoRef}
+        src={firstVideo}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{
+          objectPosition: "center 20%",
+        }}
+      />
 
-    <video
-      ref={videoRef}
-      src={firstVideo}
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="auto"
-      className="absolute inset-0 h-full w-full object-cover"
-      style={{
-        objectPosition: "center 20%",
-      }}
-    />
+      <div className="absolute inset-0 bg-ink/55" />
 
-    <div className="absolute inset-0 bg-ink/55" />
+      <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-ink/40" />
 
-    <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-ink/40" />
+      <div className="vignette absolute inset-0" />
 
-    <div className="vignette absolute inset-0" />
+      {welcomeState !== "hidden" && (
+        <div
+          className={`portfolio-welcome fixed bottom-6 right-6 z-50 sm:bottom-8 sm:right-8 ${
+            welcomeState === "leaving" ? "portfolio-welcome--leaving" : ""
+          }`}
+          aria-live="polite"
+        >
+          Welcome to my portfolio
+        </div>
+      )}
 
-    {welcomeState !== "hidden" && (
-      <div
-        className={`portfolio-welcome fixed bottom-6 right-6 z-50 sm:bottom-8 sm:right-8 ${
-          welcomeState === "leaving" ? "portfolio-welcome--leaving" : ""
-        }`}
-        aria-live="polite"
-      >
-        Welcome to my portfolio
-      </div>
-    )}
-
-
-    {/* =====================================================
+      {/* =====================================================
         ROUNDED VISUAL — LEFT CORNER OF HERO
         position: absolute so it does NOT affect document flow
         or the Hero text layout in any way.
     ===================================================== */}
-    <div
-      className="
+      <div
+        className="
         hero-visual
         pointer-events-none
         fixed
@@ -644,74 +568,62 @@ function HeroSection({ showWelcome }) {
 
         max-w-none
       "
-      aria-hidden="true"
-    />
+        aria-hidden="true"
+      />
 
-    <div className="relative z-10 mx-auto w-full max-w-7xl px-6 md:px-10">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 md:px-10">
+        <div className="max-w-2xl">
+          <p className="hero-eyebrow mb-6 text-[11px] tracking-label text-accent uppercase">
+            Backend Engineering &middot; Python &middot; Django
+          </p>
 
-      <div className="max-w-2xl">
+          <h1 className="hero-title text-balance font-serif-display text-5xl leading-[1.05] text-frost sm:text-6xl lg:text-7xl">
+            Mohan
+            <br />
+            Venkateshkumar
+          </h1>
 
-        <p className="hero-eyebrow mb-6 text-[11px] tracking-label text-accent uppercase">
-          Backend Engineering &middot; Python &middot; Django
-        </p>
+          <p className="hero-subtitle mt-6 text-sm tracking-label text-mist uppercase">
+            Python Developer &nbsp;&middot;&nbsp; Backend Developer
+          </p>
 
-        <h1 className="hero-title text-balance font-serif-display text-5xl leading-[1.05] text-frost sm:text-6xl lg:text-7xl">
-          Mohan
-          <br />
-          Venkateshkumar
-        </h1>
+          <p className="hero-desc mt-6 max-w-md text-base leading-relaxed text-mist">
+            I build reliable backend systems, REST APIs and business
+            applications using Python, Django and Django REST Framework.
+          </p>
 
-        <p className="hero-subtitle mt-6 text-sm tracking-label text-mist uppercase">
-          Python Developer &nbsp;&middot;&nbsp; Backend Developer
-        </p>
-
-        <p className="hero-desc mt-6 max-w-md text-base leading-relaxed text-mist">
-          I build reliable backend systems, REST APIs and business
-          applications using Python, Django and Django REST Framework.
-        </p>
-
-
-        <div className="mt-9 flex flex-wrap items-center gap-4">
-
-          <a
-            href={resumeFile}
-            download="Mohan_Venkateshkumar_Resume.pdf"
-            className="hero-cta inline-flex items-center justify-center gap-2 rounded-full bg-frost px-6 py-3 text-[11px] font-medium tracking-label text-ink uppercase transition hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-          >
-            Download Resume
-          </a>
-
-          <a
-            href="#projects"
-            className="hero-cta inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-[11px] tracking-label text-frost uppercase transition hover:border-white/40"
-          >
-            View Projects
-          </a>
-
-        </div>
-
-
-        <ul className="hero-stack mt-12 flex flex-wrap gap-x-6 gap-y-2">
-
-          {HERO_STACK.map((tech) => (
-            <li
-              key={tech}
-              className="text-[11px] tracking-label text-mist/80"
+          <div className="mt-9 flex flex-wrap items-center gap-4">
+            <a
+              href={resumeFile}
+              download="Mohan_Venkateshkumar_Resume.pdf"
+              className="hero-cta inline-flex items-center justify-center gap-2 rounded-full bg-frost px-6 py-3 text-[11px] font-medium tracking-label text-ink uppercase transition hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             >
-              {tech}
-            </li>
-          ))}
+              Download Resume
+            </a>
 
-        </ul>
+            <a
+              href="#projects"
+              className="hero-cta inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-[11px] tracking-label text-frost uppercase transition hover:border-white/40"
+            >
+              View Projects
+            </a>
+          </div>
 
+          <ul className="hero-stack mt-12 flex flex-wrap gap-x-6 gap-y-2">
+            {HERO_STACK.map((tech) => (
+              <li
+                key={tech}
+                className="text-[11px] tracking-label text-mist/80"
+              >
+                {tech}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-
-    </div>
-
-  </section>
-);
+    </section>
+  );
 }
-
 
 /* =========================================================
    ABOUT
@@ -725,7 +637,6 @@ function AboutSection() {
     const reduced = prefersReducedMotion();
 
     const ctx = gsap.context(() => {
-
       /* Background */
 
       gsap.fromTo(
@@ -747,11 +658,9 @@ function AboutSection() {
         },
       );
 
-
       /* Content — directional cinematic reveal */
 
       if (!reduced) {
-
         /* Eyebrow from left */
         reveal(".about-eyebrow", {
           direction: "left",
@@ -799,42 +708,24 @@ function AboutSection() {
           start: "top 78%",
           cinematic: true,
         });
-
       } else {
-
-        gsap.set(
-          ".about-eyebrow, .about-title, .about-text, .about-visual",
-          {
-            opacity: 1,
-            x: 0,
-            y: 0,
-            filter: "none",
-          },
-        );
-
+        gsap.set(".about-eyebrow, .about-title, .about-text, .about-visual", {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          filter: "none",
+        });
       }
-
 
       /* Background mouse movement */
 
       if (!reduced) {
-
         const onMove = (event) => {
+          const rect = sectionRef.current.getBoundingClientRect();
 
-          const rect =
-            sectionRef.current.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width - 0.5) * 10;
 
-          const x =
-            ((event.clientX - rect.left) /
-              rect.width -
-              0.5) *
-            10;
-
-          const y =
-            ((event.clientY - rect.top) /
-              rect.height -
-              0.5) *
-            8;
+          const y = ((event.clientY - rect.top) / rect.height - 0.5) * 8;
 
           gsap.to(bgRef.current, {
             x,
@@ -842,21 +733,13 @@ function AboutSection() {
             duration: 1,
             ease: "power2.out",
           });
-
         };
 
-        sectionRef.current.addEventListener(
-          "pointermove",
-          onMove,
-        );
+        sectionRef.current.addEventListener("pointermove", onMove);
 
         return () =>
-          sectionRef.current?.removeEventListener(
-            "pointermove",
-            onMove,
-          );
+          sectionRef.current?.removeEventListener("pointermove", onMove);
       }
-
     }, sectionRef);
 
     return () => ctx.revert();
@@ -868,7 +751,6 @@ function AboutSection() {
       id="about"
       className="relative flex min-h-[90vh] items-center overflow-hidden bg-charcoal"
     >
-
       <div
         ref={bgRef}
         className="absolute inset-0 bg-cover bg-center"
@@ -884,11 +766,8 @@ function AboutSection() {
 
       <div className="vignette absolute inset-0" />
 
-
       <div className="relative z-10 mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-6 py-24 md:grid-cols-2 md:px-10">
-
         <div>
-
           <p className="about-eyebrow mb-4 text-[11px] tracking-label text-accent uppercase">
             About Me
           </p>
@@ -904,22 +783,15 @@ function AboutSection() {
             into clean, scalable software and working across authentication,
             databases, real-time systems, caching, and modern web applications.
           </p>
-
         </div>
-
 
         <div className="about-visual flex justify-center md:justify-end">
-
           <div className="h-[280px] w-[280px] sm:h-[340px] sm:w-[340px]" />
-
         </div>
-
       </div>
-
     </section>
   );
 }
-
 
 /* =========================================================
    TECHNOLOGIES
@@ -955,7 +827,6 @@ function TechnologiesSection() {
         },
       );
 
-
       /* =====================================================
          TECHNOLOGY EYEBROW
       ===================================================== */
@@ -970,7 +841,6 @@ function TechnologiesSection() {
           start: "top 85%",
           cinematic: true,
         });
-
 
         /* ===================================================
            TECHNOLOGY TITLE
@@ -987,7 +857,6 @@ function TechnologiesSection() {
           start: "top 85%",
           cinematic: true,
         });
-
 
         /* ===================================================
            TECHNOLOGY CIRCLES
@@ -1006,18 +875,14 @@ function TechnologiesSection() {
           start: "top 82%",
         });
       } else {
-        gsap.set(
-          ".tech-eyebrow, .tech-title, .tech-card",
-          {
-            opacity: 1,
-            x: 0,
-            y: 0,
-            scale: 1,
-            filter: "none",
-          },
-        );
+        gsap.set(".tech-eyebrow, .tech-title, .tech-card", {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          filter: "none",
+        });
       }
-
 
       /* =====================================================
          BACKGROUND PARALLAX
@@ -1025,20 +890,11 @@ function TechnologiesSection() {
 
       if (!reduced && bgRef.current) {
         const onMove = (event) => {
-          const rect =
-            sectionRef.current.getBoundingClientRect();
+          const rect = sectionRef.current.getBoundingClientRect();
 
-          const x =
-            ((event.clientX - rect.left) /
-              rect.width -
-              0.5) *
-            14;
+          const x = ((event.clientX - rect.left) / rect.width - 0.5) * 14;
 
-          const y =
-            ((event.clientY - rect.top) /
-              rect.height -
-              0.5) *
-            10;
+          const y = ((event.clientY - rect.top) / rect.height - 0.5) * 10;
 
           gsap.to(bgRef.current, {
             x,
@@ -1051,23 +907,16 @@ function TechnologiesSection() {
 
         const element = sectionRef.current;
 
-        element.addEventListener(
-          "pointermove",
-          onMove,
-        );
+        element.addEventListener("pointermove", onMove);
 
         return () => {
-          element.removeEventListener(
-            "pointermove",
-            onMove,
-          );
+          element.removeEventListener("pointermove", onMove);
         };
       }
     }, sectionRef);
 
     return () => ctx.revert();
   }, []);
-
 
   return (
     <section
@@ -1079,16 +928,11 @@ function TechnologiesSection() {
         py-20
       "
     >
-
       {/* =====================================================
           BACKGROUND
       ===================================================== */}
 
-      <div
-        ref={bgRef}
-        className="absolute inset-0"
-        aria-hidden="true"
-      >
+      <div ref={bgRef} className="absolute inset-0" aria-hidden="true">
         <div
           className="
             absolute
@@ -1101,7 +945,6 @@ function TechnologiesSection() {
           }}
         />
       </div>
-
 
       {/* =====================================================
           OVERLAYS
@@ -1133,7 +976,6 @@ function TechnologiesSection() {
 
       <div className="vignette absolute inset-0" />
 
-
       {/* =====================================================
           CONTENT
       ===================================================== */}
@@ -1148,7 +990,6 @@ function TechnologiesSection() {
           md:px-10
         "
       >
-
         {/* ===================================================
             HEADING
         =================================================== */}
@@ -1180,7 +1021,6 @@ function TechnologiesSection() {
           What I build with.
         </h2>
 
-
         {/* ===================================================
             TECHNOLOGY GRID
         =================================================== */}
@@ -1207,7 +1047,6 @@ function TechnologiesSection() {
             lg:gap-y-12
           "
         >
-
           {TECHNOLOGIES.map((tech, index) => (
             <div
               key={tech.name}
@@ -1227,17 +1066,13 @@ function TechnologiesSection() {
                 hover:scale-105
               "
               style={{
-                "--aurora-delay":
-                  `${(index % 7) * 0.35}s`,
+                "--aurora-delay": `${(index % 7) * 0.35}s`,
 
-                "--aurora-from":
-                  tech.from,
+                "--aurora-from": tech.from,
 
-                "--aurora-to":
-                  tech.to,
+                "--aurora-to": tech.to,
               }}
             >
-
               {/* =================================================
                   AURORA
               ================================================= */}
@@ -1252,7 +1087,6 @@ function TechnologiesSection() {
                 aria-hidden="true"
               />
 
-
               {/* =================================================
                   GLASS INNER
               ================================================= */}
@@ -1266,7 +1100,6 @@ function TechnologiesSection() {
                 "
                 aria-hidden="true"
               />
-
 
               {/* =================================================
                   TECHNOLOGY NAME
@@ -1306,12 +1139,9 @@ function TechnologiesSection() {
                   {tech.name}
                 </span>
               </div>
-
             </div>
           ))}
-
         </div>
-
       </div>
     </section>
   );
